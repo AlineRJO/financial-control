@@ -1,0 +1,38 @@
+
+<div class="row">
+  <div class="po-md-3">
+    <po-input
+      p-label="Par:">
+    </po-input>
+  </div>
+
+  <div class="po-md-3">
+    <po-datepicker
+    [(ngModel)]="startDate"
+    p-format="dd/mm/yyyy"
+    p-label="Date start"
+    p-required
+    [p-max-date]="endDate"
+  >
+  </po-datepicker>
+  </div>
+
+  <div class="po-md-3">
+    <po-input
+      p-label="Valor:">
+    </po-input>
+  </div>
+
+  <div class="po-md-3">
+    <po-select
+    name="select"
+    p-label="Tipo de Operação"
+    [p-options]="[
+      { label: 'Compra', value: '1' },
+      { label: 'Venda', value: '2' }
+    ]"
+  >
+  </po-select>
+  </div>
+
+</div>

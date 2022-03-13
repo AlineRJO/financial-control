@@ -1,3 +1,4 @@
+import { FirebaseDatabaseResource } from './../../firebase-database/firebase-database.resource';
 import {Component} from '@angular/core';
 import {Router} from '@angular/router';
 
@@ -13,7 +14,10 @@ export class LoginComponent {
   password: string;
   email = '';
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private firebaseDbRsc: FirebaseDatabaseResource
+    ) {}
 
   confirmClick(): void {
     if (this.login && this.password) {
@@ -26,6 +30,10 @@ export class LoginComponent {
   }
 
   newLogin(): void {
-
+    this.firebaseDbRsc.insert('user', {
+      name: this.login,
+      password: this.password,
+      email: this.email
+    });
   }
 }

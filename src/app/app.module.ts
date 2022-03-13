@@ -4,20 +4,20 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { PoModule } from '@po-ui/ng-components';
 import { RouterModule } from '@angular/router';
-import { OrderRegisterComponent } from './order-register/order-register.component';
 import { FormsModule } from '@angular/forms';
+import { PanelModule } from './panel/panel.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    OrderRegisterComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     PoModule,
     FormsModule,
-    RouterModule.forRoot([])
+    RouterModule.forRoot([]),
+    PanelModule
   ],
   providers: [],
   bootstrap: [AppComponent]

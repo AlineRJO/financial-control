@@ -1,0 +1,6 @@
+<div class="row">
+  <div *ngFor="let menu of menuItems" class="col-3">
+    <span class="box d-flex align-items-center justify-content-center"
+     (click)="changePage(menu.url)">{{menu.label}}</span>
+  </div>
+</div>

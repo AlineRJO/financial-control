@@ -1,8 +1,8 @@
 import { TypeOperationEnum } from './type-operation-enum';
 
 export interface IssueModel {
-  par: string;
-  date: Date;
+  orderPar: string;
+  dateOperation: Date;
   amout: number;
   typeOperation: TypeOperationEnum;
 }

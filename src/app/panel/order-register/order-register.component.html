@@ -1,38 +1,43 @@
-
-<div class="row">
-  <div class="po-md-3">
-    <po-input
-      p-label="Par:">
-    </po-input>
+<div class="p-4" [formGroup]="ordemForm">
+  <div class="row">
+    <div class="col-3">
+      <po-input
+        p-label="Par:"
+        formControlName="orderPar">
+      </po-input>
+    </div>
+  
+    <div class="col-3">
+      <po-datepicker
+      formControlName="dateOperation"
+      p-format="dd/mm/yyyy"
+      p-label="Date da ordem"
+      p-required
+      [p-max-date]="endDate">
+    </po-datepicker>
+    </div>
+  
+    <div class="col-3">
+      <po-input
+        p-label="Valor:"
+        formControlName="amount">
+      </po-input>
+    </div>
+  
+    <div class="col-3">
+      <po-select
+      name="select"
+      p-label="Tipo de Operação"
+      [p-options]="[
+        { label: 'Compra', value: typeOperationEnum.buy},
+        { label: 'Venda', value: typeOperationEnum.sale}
+      ]"
+      formControlName="typeOperation"
+    >
+    </po-select>
+    </div>
   </div>
 
-  <div class="po-md-3">
-    <po-datepicker
-    [(ngModel)]="startDate"
-    p-format="dd/mm/yyyy"
-    p-label="Date da ordem"
-    p-required
-    [p-max-date]="endDate"
-  >
-  </po-datepicker>
-  </div>
-
-  <div class="po-md-3">
-    <po-input
-      p-label="Valor:">
-    </po-input>
-  </div>
-
-  <div class="po-md-3">
-    <po-select
-    name="select"
-    p-label="Tipo de Operação"
-    [p-options]="[
-      { label: 'Compra', value: '1' },
-      { label: 'Venda', value: '2' }
-    ]"
-  >
-  </po-select>
-  </div>
-
+  <po-button p-label="Salvar" (p-click)="orderSave()"></po-button>
 </div>
+

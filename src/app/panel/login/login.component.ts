@@ -25,8 +25,12 @@ export class LoginComponent {
     }
   }
 
-  findUser(name: string): any {
-    this.router.navigateByUrl('register');
+  findUser(loginData: string): any {
+    this.firebaseDbRsc.getById('user', loginData, 'name', true).subscribe((result) => {
+      console.log('result', result);
+
+      result && this.router.navigateByUrl('menu');
+    });
   }
 
   newLogin(): void {

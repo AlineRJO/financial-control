@@ -14,30 +14,26 @@ export class FirebaseDatabaseResource {
     public poNotification: PoNotificationService
   ) { }
 
-  get(url: string): Observable<any> {
+  get(url: string, privateData = false): Observable<any> {
     return this.db.list(url)
       .snapshotChanges()
       .pipe(
         map(changes => {
-          console.log('changes', changes);
-          return changes;
-         // return changes.map( c => ({key: c.payload.key, ...c.payload.val() as {} }));
+         return changes.map( c => {
+          return  {key: c.payload.key, ...c.payload.val() as {} };
+         });
         }));
   }
 
-  getById(url: string, key: string, columnCompare: string): Observable<any> {
-    return this.get(url).pipe(
+  getById(url: string, key: string, columnCompare: string, privateData = false): Observable<any> {
+    return this.get(url, privateData).pipe(
       map(allItems => {
-        if (allItems) {
-          return allItems.find(x => x[columnCompare] === key);
-        }
-        return allItems;
+          return allItems && allItems.find(x => x[columnCompare] === key);
       })
     );
   }
 
   insert(url: string, data: any): Promise<string> {
-    console.log('insert');
     return this.db.list(url)
       .push(data)
       .then( result => {

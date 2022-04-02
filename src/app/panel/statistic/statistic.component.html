@@ -1,1 +1,37 @@
-<p>statistic works!</p>
+<div class="pt-2">
+    <div class="po-row">
+        <div class="col-6">
+            <po-table
+                [p-columns]="columns"
+                [p-items]="items">
+                <ng-template p-table-cell-template let-column="column" let-row="row">
+                    <div *ngIf="column.property === 'typeOperation'">
+                    {{row}}
+                    </div>
+                </ng-template>
+            </po-table>
+        </div>
+        <div class="po-row col-6">
+            <div class="po-row">
+                <po-select
+                class="col-12"
+                name="select"
+                p-label="Filtrar"
+                [p-options]="optionsOrder"
+                (p-change)="filterOrderList($event)"
+              >
+              </po-select>
+            </div>
+            <div class="po-row d-flex justify-content-center pb-2">
+                <div class="col-auto">Seu PM é:</div>
+                <div class="col-3 text-right">{{pmValue}}</div>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="po-row">
+
+    </div>
+</div>
+

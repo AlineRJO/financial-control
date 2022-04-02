@@ -30,7 +30,8 @@ export class OrderRegisterComponent implements OnInit {
       dateOperation: new Date(),
       typeOperation: this.typeOperationEnum.buy,
       amount: 0,
-      orderPar: ''
+      orderPar: '',
+      quantity: 0
     });
   }
 

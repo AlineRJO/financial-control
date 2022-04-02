@@ -19,7 +19,14 @@
   
     <div class="col-3">
       <po-input
-        p-label="Valor:"
+        p-label="Quantidade:"
+        formControlName="quantity">
+      </po-input>
+    </div>
+
+    <div class="col-3">
+      <po-input
+        p-label="Preço:"
         formControlName="amount">
       </po-input>
     </div>
@@ -35,7 +42,7 @@
       formControlName="typeOperation"
     >
     </po-select>
-    </div>
+    </div>    
   </div>
 
   <po-button p-label="Salvar" (p-click)="orderSave()"></po-button>

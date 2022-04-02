@@ -20,7 +20,7 @@ export class FirebaseDatabaseResource {
       .pipe(
         map(changes => {
          return changes.map( c => {
-          return  {key: c.payload.key, ...c.payload.val() as {} };
+            return {key: c.payload.key, ...c.payload.val() as {} };
          });
         }));
   }

@@ -11,7 +11,13 @@ export class StatisticService {
     return item.orderPar.substring(0, index);
   }
 
+  lastSubstringOrder(item: IssueModel) {
+    const index = item.orderPar.indexOf('-');
+    return item.orderPar.substring(index +1);
+  }
+
   calcPM(listFiltred: IssueModel[]): number {
+    // TODO: O CALC DEVERÁ SER FEITO CONVERTENDO PARA A MOEDA BRL
     const {numeradorTotal, denominadorTotal} = listFiltred.reduce((acc, result) => {
   
       acc.denominadorTotal = this.preparedNumber(result.quantity);

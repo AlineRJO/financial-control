@@ -1,6 +1,6 @@
-<div class="pt-2">
+<div class="py-2">
     <div class="po-row">
-        <div class="col-6">
+        <div class="col-6 box-table">
             <po-table
                 [p-columns]="columns"
                 [p-items]="items">
@@ -22,11 +22,15 @@
               >
               </po-select>
             </div>
-            <div class="po-row d-flex justify-content-center pb-2">
+            <div class="d-flex justify-content-center pb-2">
+                <div *ngFor="let itemToken of tokenBuyList" [formGroup]="form" class="col-auto">
+                    <po-input [p-label]="itemToken" [formControlName]="itemToken"></po-input>
+                </div>
+            </div>
+            <div class="po-row">
                 <div class="col-auto">Seu PM é:</div>
                 <div class="col-3 text-right">{{pmValue}}</div>
             </div>
-            
         </div>
     </div>
 

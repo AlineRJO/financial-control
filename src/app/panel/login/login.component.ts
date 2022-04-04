@@ -26,6 +26,7 @@ export class LoginComponent {
   }
 
   findUser(loginData: string): any {
+    // TODO: VALIDAR OS DADOS DO USUARIO LOGADO COM OS DADOS SALVOS
     this.firebaseDbRsc.getById('user', loginData, 'name', true).subscribe((result) => {
       result && this.router.navigateByUrl('menu');
     });

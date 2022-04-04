@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { stringify } from 'querystring';
 import { TypeOperationEnum } from '../../models/type-operation-enum';
 import { FirebaseDatabaseResource } from '../../firebase-database/firebase-database.resource';
 
@@ -36,6 +35,8 @@ export class OrderRegisterComponent implements OnInit {
   }
 
   orderSave() {
-    this.firebaseDbRsc.insert('order', this.ordemForm.value);
+    const dateForm = new Date(this.ordemForm.get('dateOperation').value).toLocaleDateString('pt-BR', { timeZone: 'UTC'});
+    this.ordemForm.get('dateOperation').setValue(dateForm, { emitEvent: false });
+    this.firebaseDbRsc.insert('order', this.ordemForm.value);    
   }
 }

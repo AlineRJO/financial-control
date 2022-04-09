@@ -11,7 +11,6 @@ import { FirebaseDatabaseResource } from '../../firebase-database/firebase-datab
 export class OrderRegisterComponent implements OnInit {
 
   endDate: string = <any>new Date();
-  //startDate: string = <any>new Date();
   typeOperationEnum = TypeOperationEnum;
   ordemForm: FormGroup;
 
@@ -30,7 +29,8 @@ export class OrderRegisterComponent implements OnInit {
       typeOperation: this.typeOperationEnum.buy,
       amount: 0,
       orderPar: '',
-      quantity: 0
+      quantity: 0,
+      quotation: 1
     });
   }
 

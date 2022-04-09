@@ -20,16 +20,35 @@ export class StatisticService {
     // TODO: O CALC DEVERÁ SER FEITO CONVERTENDO PARA A MOEDA BRL
     const {numeradorTotal, denominadorTotal} = listFiltred.reduce((acc, result) => {
   
-      acc.denominadorTotal = this.preparedNumber(result.quantity);
-      acc.numeradorTotal = this.preparedNumber(result.quantity) * this.preparedNumber(result.amount);
+      const denominadorTotal = +result.quantity;
+      const numeradorTotal = +result.quantity * (+result.amount) * (+result?.quotation | 1);
 
+      acc.denominadorTotal = acc.denominadorTotal + denominadorTotal;
+      acc.numeradorTotal = acc.numeradorTotal + numeradorTotal;
+
+      console.log(`acc`, acc);
+      console.log(`quotation`, (+result?.quotation | 1));
       return acc;
     }, {numeradorTotal:0, denominadorTotal: 0});
+    console.log('numeradorTotal', numeradorTotal);
+    console.log('denominadorTotal', denominadorTotal);
     return numeradorTotal/denominadorTotal;
   }
 
   preparedNumber(value: number): number {
-    const teste = +(value.toString().replace('.', '').replace(',', '.'));
-    return teste;
+    return +(value.toString().replace('.', ',').replace(',', ''));
+  }
+
+  preparedQuotationList(listFiltred: IssueModel[], data: {token: string, value: number}) {
+    return listFiltred.map(item => {
+      const buyedToken = this.lastSubstringOrder(item);
+      if(buyedToken === data.token && (!item.quotation || item.quotation === 0)) {
+        item.quotation = data.value;
+      } else if (buyedToken === 'BRL') {
+        item.quotation = 1;
+      }
+      
+      return item;
+    });
   }
 }

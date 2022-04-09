@@ -22,10 +22,12 @@
               >
               </po-select>
             </div>
-            <div class="d-flex justify-content-center pb-2">
-                <div *ngFor="let itemToken of tokenBuyList" [formGroup]="form" class="col-auto">
+            <div class="d-flex justify-content-center pb-2" [formGroup]="form">
+                <div *ngFor="let itemToken of tokenBuyList" class="col-auto">
                     <po-input [p-label]="itemToken" [formControlName]="itemToken"></po-input>
                 </div>
+                <po-button p-label="Recalcular" (p-click)="insertQuotation()">
+                </po-button>
             </div>
             <div class="po-row">
                 <div class="col-auto">Seu PM é:</div>

@@ -33,16 +33,23 @@
   
     <div class="col-3">
       <po-select
-      name="select"
-      p-label="Tipo de Operação"
-      [p-options]="[
-        { label: 'Compra', value: typeOperationEnum.buy},
-        { label: 'Venda', value: typeOperationEnum.sale}
-      ]"
-      formControlName="typeOperation"
-    >
-    </po-select>
-    </div>    
+        name="select"
+        p-label="Tipo de Operação"
+        [p-options]="[
+          { label: 'Compra', value: typeOperationEnum.buy},
+          { label: 'Venda', value: typeOperationEnum.sale}
+        ]"
+        formControlName="typeOperation"
+      >
+      </po-select>
+    </div> 
+
+    <div class="col-3">
+      <po-input
+        p-label="Cotação token de compra:"
+        formControlName="quotation">
+      </po-input>
+    </div>   
   </div>
 
   <po-button p-label="Salvar" (p-click)="orderSave()"></po-button>

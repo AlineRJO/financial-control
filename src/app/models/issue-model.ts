@@ -6,4 +6,6 @@ export interface IssueModel {
   amount: number;
   quantity: number;
   typeOperation: TypeOperationEnum;
+  quotation: number;
+  key?: string;
 }

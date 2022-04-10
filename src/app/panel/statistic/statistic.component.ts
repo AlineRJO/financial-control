@@ -31,7 +31,7 @@ export class StatisticComponent implements OnInit {
     this.getData();
   }
 
-  getData() {
+  getData() {    
     this.firebaseDatabaseRsc.get('order').subscribe(result => {
       this.itemsOriginal = this.listSort(result);
       this.items = this.itemsOriginal;
@@ -46,6 +46,7 @@ export class StatisticComponent implements OnInit {
       { property: 'amount' },
       { property: 'quantity' },
       { property: 'typeOperation' },
+      { property: 'quotation' },
     ];
   }
 
@@ -70,7 +71,7 @@ export class StatisticComponent implements OnInit {
 
   getBuyedList() {
     this.tokenBuyList = [];
-    this.items.map(i => {
+    this.items.forEach(i => {
       const buyed = this.statisticSvc.lastSubstringOrder(i);
       if (buyed != 'BRL') {
         this.tokenBuyList.push(buyed);
@@ -79,7 +80,7 @@ export class StatisticComponent implements OnInit {
       this.tokenBuyList = this.tokenBuyList.map(item => item)
         .filter((value, index, self) => self.indexOf(value) === index);
     });
-    this.createGroup();
+    this.createGroup();    
   }
 
   filterOrderList(search: string) {
@@ -91,7 +92,7 @@ export class StatisticComponent implements OnInit {
       }
     });
     this.pmValue = this.statisticSvc.calcPM(this.items);
-    this.getBuyedList();
+    this.getBuyedList();    
     } else {
       this.items = this.itemsOriginal;
       this.pmValue = 0;
@@ -102,15 +103,13 @@ export class StatisticComponent implements OnInit {
   createGroup() {
     const group = this.fb.group({});
     this.tokenBuyList.forEach(control => group.addControl(control, this.fb.control('')));
-    console.log('group', group);
     this.form = group;
 
     if (this.form && this.tokenBuyList) {
       const found = this.items.filter(i => this.statisticSvc.lastSubstringOrder(i) === this.tokenBuyList[0])
       found.forEach(i => {
-          this.form.get(this.tokenBuyList).setValue(i.quotation | 1);
+          this.form.get(this.tokenBuyList).setValue(i.quotation === 0 ? 1 : i.quotation);
       });
-    
     }
   }
 
@@ -118,13 +117,11 @@ export class StatisticComponent implements OnInit {
     const objectList = Object.getOwnPropertyNames(this.form.value);
     let newItemsToken;
     objectList.map(token => {
-      newItemsToken = this.statisticSvc.preparedQuotationList(this.items, {token: token, value: this.form.get(token).value});
-      this.firebaseDatabaseRsc.update('order', newItemsToken); 
+      newItemsToken = this.statisticSvc
+      .preparedQuotationList(this.items, {token: token, value: this.form.get(token).value});
     });
-    this.items = newItemsToken;
-    this.pmValue = this.statisticSvc.calcPM(this.items);
 
-    console.log('items', this.items);
-       
+    this.items = newItemsToken;
+    this.pmValue = this.statisticSvc.calcPM(this.items);       
   }
 }

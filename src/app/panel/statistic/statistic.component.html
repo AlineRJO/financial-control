@@ -6,7 +6,12 @@
                 [p-items]="items">
                 <ng-template p-table-cell-template let-column="column" let-row="row">
                     <div *ngIf="column.property === 'typeOperation'">
-                    {{row}}
+                        <div *ngIf="+typeOperationEnum.buy === +row.typeOperation">
+                            <span class="po-font-text-bold po-text-color-09">COMPRA</span>
+                        </div>
+                        <div *ngIf="+typeOperationEnum.sale === +row.typeOperation">
+                            <span class="po-font-text-bold po-text-color-07">VENDA</span>
+                        </div>
                     </div>
                 </ng-template>
             </po-table>
@@ -22,7 +27,7 @@
               >
               </po-select>
             </div>
-            <div class="d-flex justify-content-center pb-2" [formGroup]="form">
+            <div class="po-row d-flex justify-content-center pb-2" [formGroup]="form">
                 <div *ngFor="let itemToken of tokenBuyList" class="col-auto">
                     <po-input [p-label]="itemToken" [formControlName]="itemToken"></po-input>
                 </div>

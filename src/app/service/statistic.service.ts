@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { IssueModel } from '../models/issue-model';
 import { FirebaseDatabaseResource } from '../firebase-database/firebase-database.resource';
+import { TypeOperationEnum } from '../models/type-operation-enum';
 
 @Injectable({
   providedIn: 'root'
@@ -21,15 +22,17 @@ export class StatisticService {
 
   calcPM(listFiltred: IssueModel[]): number {
     // TODO: O CALC DEVERÁ SER FEITO CONVERTENDO PARA A MOEDA BRL
+    
     const {numeradorTotal, denominadorTotal} = listFiltred.reduce((acc, result) => {
-  
-      const denominadorTotal = +result.quantity;
-      const quotation = this.preparedNumber(result?.quotation);
-      const numeradorTotal = +result.quantity * (+result.amount) * (quotation === 0 ? 1 : quotation);
+      if (result.typeOperation === TypeOperationEnum.buy) {
+        const denominadorTotal = +result.quantity;
+        const quotation = this.preparedNumber(result?.quotation);
+        const numeradorTotal = +result.quantity * (+result.amount) * (quotation === 0 ? 1 : quotation);
 
-      acc.denominadorTotal = acc.denominadorTotal + denominadorTotal;
-      acc.numeradorTotal = acc.numeradorTotal + numeradorTotal;
+        acc.denominadorTotal = acc.denominadorTotal + denominadorTotal;
+        acc.numeradorTotal = acc.numeradorTotal + numeradorTotal;
 
+      }
       return acc;
     }, {numeradorTotal:0, denominadorTotal: 0});
 
@@ -37,13 +40,16 @@ export class StatisticService {
   }
 
   preparedNumber(value: number): number {
-    return +(value.toString().replace(',', '.'));  
+    if (value) {
+      return +(value.toString().replace(',', '.'));    
+    }
+    return 1;
   }
 
   preparedQuotationList(listFiltred: IssueModel[], data: {token: string, value: number}) {
     return listFiltred.map(item => {
       const buyedToken = this.lastSubstringOrder(item);
-      if(buyedToken === data.token && (!item.quotation || item.quotation === 0)) {
+      if(buyedToken === data.token  && (!item.quotation || item.quotation === 0)) {
         item.quotation = this.preparedNumber(data.value);
       } else if (buyedToken === 'BRL') {
         item.quotation = 1;

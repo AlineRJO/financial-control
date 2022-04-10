@@ -4,6 +4,7 @@ import { FirebaseDatabaseResource } from '../../firebase-database/firebase-datab
 import { IssueModel } from '../../models/issue-model';
 import { StatisticService } from '../../service/statistic.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { TypeOperationEnum } from '../../models/type-operation-enum';
 
 @Component({
   selector: 'app-statistic',
@@ -18,6 +19,7 @@ export class StatisticComponent implements OnInit {
   pmValue: number = 0;
   optionsOrder: PoSelectOption[] = [];
   form: FormGroup;
+  typeOperationEnum = TypeOperationEnum;
 
   constructor(
     private firebaseDatabaseRsc: FirebaseDatabaseResource,
@@ -28,7 +30,9 @@ export class StatisticComponent implements OnInit {
   ngOnInit(): void {
     this.form = this.fb.group({});
     this.getColumns();
-    this.getData();
+    if (!this.items || this.items.length === 0) {
+      this.getData();  
+    }
   }
 
   getData() {    
@@ -45,7 +49,7 @@ export class StatisticComponent implements OnInit {
       { property: 'dateOperation' },
       { property: 'amount' },
       { property: 'quantity' },
-      { property: 'typeOperation' },
+      { property: 'typeOperation', type: 'cellTemplate' },
       { property: 'quotation' },
     ];
   }
@@ -97,7 +101,6 @@ export class StatisticComponent implements OnInit {
       this.items = this.itemsOriginal;
       this.pmValue = 0;
     }
-    
   }
   
   createGroup() {
@@ -106,9 +109,12 @@ export class StatisticComponent implements OnInit {
     this.form = group;
 
     if (this.form && this.tokenBuyList) {
-      const found = this.items.filter(i => this.statisticSvc.lastSubstringOrder(i) === this.tokenBuyList[0])
-      found.forEach(i => {
-          this.form.get(this.tokenBuyList).setValue(i.quotation === 0 ? 1 : i.quotation);
+      this.items.forEach(i => {
+        const buyedToken = this.statisticSvc.lastSubstringOrder(i);
+        if (buyedToken !== 'BRL') {
+          const quotationValue =  !i.quotation || i.quotation === 0 ? 1 : i.quotation;
+          this.form.get(buyedToken).setValue(quotationValue);
+        }
       });
     }
   }
@@ -116,12 +122,22 @@ export class StatisticComponent implements OnInit {
   insertQuotation() {
     const objectList = Object.getOwnPropertyNames(this.form.value);
     let newItemsToken;
-    objectList.map(token => {
-      newItemsToken = this.statisticSvc
-      .preparedQuotationList(this.items, {token: token, value: this.form.get(token).value});
-    });
 
-    this.items = newItemsToken;
+    if (objectList.length) {
+       objectList.map(token => {
+        newItemsToken = this.statisticSvc
+        .preparedQuotationList(this.items, {token: token, value: this.form.get(token).value});
+      });
+    } else {
+      this.items.map(token => {
+        token.quotation = 1;
+        this.firebaseDatabaseRsc.update('order', token); 
+      });
+    }
+   
+
+    this.items = newItemsToken ? newItemsToken : this.items;
     this.pmValue = this.statisticSvc.calcPM(this.items);       
   }
+
 }

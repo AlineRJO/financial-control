@@ -1,4 +1,16 @@
 <div class="py-2">
+
+    <div class="po-row">
+        <po-select
+        class="col-5"
+        name="select"
+        p-label="Ordenar por"
+        [p-options]="optionsToOrder"
+        (p-change)="listSort($event)"
+      >
+      </po-select>
+    </div>
+
     <div class="po-row">
         <div class="col-8 box-table">
             <po-table
@@ -22,7 +34,7 @@
                 class="col-12"
                 name="select"
                 p-label="Filtrar"
-                [p-options]="optionsOrder"
+                [p-options]="optionsFilterOrder"
                 (p-change)="filterOrderList($event)"
               >
               </po-select>
@@ -31,6 +43,8 @@
                 <div *ngFor="let itemToken of tokenBuyList" class="col-auto">
                     <po-input [p-label]="itemToken" [formControlName]="itemToken"></po-input>
                 </div>
+            </div>
+            <div class="po-row">
                 <po-button p-label="Recalcular" (p-click)="insertQuotation()">
                 </po-button>
             </div>

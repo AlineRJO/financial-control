@@ -43,14 +43,14 @@ export class StatisticService {
     if (value) {
       return +(value.toString().replace(',', '.'));    
     }
-    return 1;
   }
 
   preparedQuotationList(listFiltred: IssueModel[], data: {token: string, value: number}) {
     return listFiltred.map(item => {
+      const valuePrepared = this.preparedNumber(data.value);;
       const buyedToken = this.lastSubstringOrder(item);
       if(buyedToken === data.token  && (!item.quotation || item.quotation === 0)) {
-        item.quotation = this.preparedNumber(data.value);
+        item.quotation = valuePrepared ? valuePrepared : 1;
       } else if (buyedToken === 'BRL') {
         item.quotation = 1;
       }

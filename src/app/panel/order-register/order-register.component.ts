@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { TypeOperationEnum } from '../../models/type-operation-enum';
 import { FirebaseDatabaseResource } from '../../firebase-database/firebase-database.resource';
+import { StatisticService } from '../../service/statistic.service';
 
 @Component({
   selector: 'app-order-register',
@@ -16,7 +17,8 @@ export class OrderRegisterComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private firebaseDbRsc: FirebaseDatabaseResource
+    private firebaseDbRsc: FirebaseDatabaseResource,
+    private statisticSvc: StatisticService
     ) { }
 
   ngOnInit(): void {
@@ -35,8 +37,13 @@ export class OrderRegisterComponent implements OnInit {
   }
 
   orderSave() {
-    const dateForm = new Date(this.ordemForm.get('dateOperation').value).toLocaleDateString('pt-BR', { timeZone: 'UTC'});
-    this.ordemForm.get('dateOperation').setValue(dateForm, { emitEvent: false });
-    this.firebaseDbRsc.insert('order', this.ordemForm.value);    
+    const dataForm = this.ordemForm.value;
+
+    dataForm.dateOperation = new Date(this.ordemForm.get('dateOperation').value).toLocaleDateString('pt-BR', { timeZone: 'UTC'});
+    dataForm.quotation = this.statisticSvc.preparedNumber(this.ordemForm.get('quotation').value);    
+    dataForm.quantity = this.statisticSvc.preparedNumber(this.ordemForm.get('quantity').value);    
+    dataForm.amount = this.statisticSvc.preparedNumber(this.ordemForm.get('amount').value);
+    
+    this.firebaseDbRsc.insert('order', dataForm);    
   }
 }

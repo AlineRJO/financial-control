@@ -17,7 +17,8 @@ export class StatisticComponent implements OnInit {
   items: IssueModel[];
   tokenBuyList: Array<string> = [];
   pmValue: number = 0;
-  optionsOrder: PoSelectOption[] = [];
+  optionsFilterOrder: PoSelectOption[] = [];
+  optionsToOrder: PoSelectOption[] = [];
   form: FormGroup;
   typeOperationEnum = TypeOperationEnum;
 
@@ -31,15 +32,16 @@ export class StatisticComponent implements OnInit {
     this.form = this.fb.group({});
     this.getColumns();
     if (!this.items || this.items.length === 0) {
-      this.getData();  
+      this.getData();
     }
   }
 
   getData() {    
     this.firebaseDatabaseRsc.get('order').subscribe(result => {
-      this.itemsOriginal = this.listSort(result);
-      this.items = this.itemsOriginal;
-      this.optionsOrder = this.getOptionsCrypto();
+      this.items = result;
+      this.itemsOriginal = this.listSort('orderPar');
+      this.optionsFilterOrder = this.getOptionsCrypto();
+      this.getOptionsToOrder();
     });
   }
 
@@ -54,23 +56,30 @@ export class StatisticComponent implements OnInit {
     ];
   }
 
-  listSort(list) {
-    return list.sort((a,b) => {
-      if(a.orderPar > b.orderPar) {return 1;}
-      if(a.orderPar < b.orderPar) {return -1;}
+  listSort(order: string) {
+    return this.items.sort((a,b) => {
+      if(a[order] > b[order] ) {return 1;}
+      if(a[order] < b[order] ) {return -1;}
       return 0;
     });
   }
 
   getOptionsCrypto() {
-    const newItems =  this.items.map(i => {
+    return this.items.map(i => {
       return {
         label: this.statisticSvc.substringOrder(i),
         value: this.statisticSvc.substringOrder(i)
       }
     });
-    
-    return newItems;
+  }
+
+  getOptionsToOrder() {
+    this.optionsToOrder = this.columns.map(i => {
+      return {
+        label: i.property.toString(),
+        value: i.property.toString()
+      }
+    });
   }
 
   getBuyedList() {
@@ -84,7 +93,7 @@ export class StatisticComponent implements OnInit {
       this.tokenBuyList = this.tokenBuyList.map(item => item)
         .filter((value, index, self) => self.indexOf(value) === index);
     });
-    this.createGroup();    
+    this.createGroup();
   }
 
   filterOrderList(search: string) {
@@ -130,7 +139,7 @@ export class StatisticComponent implements OnInit {
       });
     } else {
       this.items.map(token => {
-        token.quotation = 1;
+        token.quotation = token?.quotation > 0 ? token.quotation : 1;
         this.firebaseDatabaseRsc.update('order', token); 
       });
     }

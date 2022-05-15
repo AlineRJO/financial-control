@@ -36,8 +36,10 @@ export class StatisticComponent implements OnInit {
     }
   }
 
-  getData() {    
+  getData() {
     this.firebaseDatabaseRsc.get('order').subscribe(result => {
+      console.log(result);
+      
       this.items = result;
       this.itemsOriginal = this.listSort('orderPar');
       this.optionsFilterOrder = this.getOptionsCrypto();

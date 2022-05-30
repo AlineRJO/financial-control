@@ -2,13 +2,17 @@ import { Injectable } from '@angular/core';
 import { IssueModel } from '../models/issue-model';
 import { FirebaseDatabaseResource } from '../firebase-database/firebase-database.resource';
 import { TypeOperationEnum } from '../models/type-operation-enum';
+import { CryptoCurrencyService } from './crypto-currency.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StatisticService {
 
-  constructor(private firebaseDatabaseRsc: FirebaseDatabaseResource) {}
+  constructor(
+    private firebaseDatabaseRsc: FirebaseDatabaseResource,
+    private cryptoCurrencyService: CryptoCurrencyService
+    ) {}
 
   substringOrder(item: IssueModel) {
     const index = item.orderPar.indexOf('-');

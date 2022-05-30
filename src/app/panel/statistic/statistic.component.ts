@@ -5,6 +5,7 @@ import { IssueModel } from '../../models/issue-model';
 import { StatisticService } from '../../service/statistic.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { TypeOperationEnum } from '../../models/type-operation-enum';
+import { CryptoCurrencyService } from '../../service/crypto-currency.service';
 
 @Component({
   selector: 'app-statistic',
@@ -37,9 +38,7 @@ export class StatisticComponent implements OnInit {
   }
 
   getData() {
-    this.firebaseDatabaseRsc.get('order').subscribe(result => {
-      console.log(result);
-      
+    this.firebaseDatabaseRsc.get('order').subscribe(result => {      
       this.items = result;
       this.itemsOriginal = this.listSort('orderPar');
       this.optionsFilterOrder = this.getOptionsCrypto();
@@ -54,7 +53,7 @@ export class StatisticComponent implements OnInit {
       { property: 'amount' },
       { property: 'quantity' },
       { property: 'typeOperation', type: 'cellTemplate' },
-      { property: 'quotation' },
+      { property: 'quotation' }
     ];
   }
 
@@ -66,13 +65,18 @@ export class StatisticComponent implements OnInit {
     });
   }
 
-  getOptionsCrypto() {
-    return this.items.map(i => {
+  getOptionsCrypto(): PoSelectOption[] {
+    const optionsList = this.items.map(i => {
       return {
         label: this.statisticSvc.substringOrder(i),
         value: this.statisticSvc.substringOrder(i)
       }
     });
+    optionsList.splice(0, 0, {
+      label: 'Todos',
+      value: ''
+    })
+    return optionsList;
   }
 
   getOptionsToOrder() {
@@ -106,7 +110,7 @@ export class StatisticComponent implements OnInit {
         return orders;
       }
     });
-    this.pmValue = this.statisticSvc.calcPM(this.items);
+    this.pmValue = +this.statisticSvc.calcPM(this.items).toFixed(2);
     this.getBuyedList();    
     } else {
       this.items = this.itemsOriginal;

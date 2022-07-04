@@ -14,8 +14,10 @@ import { CryptoCurrencyService } from '../../service/crypto-currency.service';
 })
 export class StatisticComponent implements OnInit {
   columns: PoTableColumn[];
+  cryptoColumns: PoTableColumn[];
   itemsOriginal: IssueModel[];
   items: IssueModel[];
+  regrouped: Array<any>;
   tokenBuyList: Array<string> = [];
   pmValue: number = 0;
   optionsFilterOrder: PoSelectOption[] = [];
@@ -25,7 +27,7 @@ export class StatisticComponent implements OnInit {
 
   constructor(
     private firebaseDatabaseRsc: FirebaseDatabaseResource,
-    private statisticSvc: StatisticService,
+    public statisticSvc: StatisticService,
     private fb: FormBuilder
     ) { }
 
@@ -40,9 +42,10 @@ export class StatisticComponent implements OnInit {
   getData() {
     this.firebaseDatabaseRsc.get('order').subscribe(result => {      
       this.items = result;
-      this.itemsOriginal = this.listSort('orderPar');
-      this.optionsFilterOrder = this.getOptionsCrypto();
+      this.itemsOriginal = this.statisticSvc.listSort('orderPar', this.items);
+      this.getOptionsCrypto();
       this.getOptionsToOrder();
+      this.itemsRegroup(result);
     });
   }
 
@@ -55,17 +58,15 @@ export class StatisticComponent implements OnInit {
       { property: 'typeOperation', type: 'cellTemplate' },
       { property: 'quotation' }
     ];
+
+    this.cryptoColumns = [
+      { property: 'par', label: 'Token'},
+      { property: 'currencyValue', label: 'Valor Atual', type: 'cellTemplate'},
+      { property: 'PM', label: 'PM(R$)', type: 'cellTemplate' },
+    ];
   }
 
-  listSort(order: string) {
-    return this.items.sort((a,b) => {
-      if(a[order] > b[order] ) {return 1;}
-      if(a[order] < b[order] ) {return -1;}
-      return 0;
-    });
-  }
-
-  getOptionsCrypto(): PoSelectOption[] {
+  getOptionsCrypto(): void {
     const optionsList = this.items.map(i => {
       return {
         label: this.statisticSvc.substringOrder(i),
@@ -76,7 +77,7 @@ export class StatisticComponent implements OnInit {
       label: 'Todos',
       value: ''
     })
-    return optionsList;
+    this.optionsFilterOrder = optionsList;
   }
 
   getOptionsToOrder() {
@@ -103,7 +104,7 @@ export class StatisticComponent implements OnInit {
   }
 
   filterOrderList(search: string) {
-    if (search) {      
+    if (search && search != '0') {      
       this.items = this.itemsOriginal.filter(orders => {
       const token = this.statisticSvc.substringOrder(orders);
       if (token === search) {
@@ -155,4 +156,8 @@ export class StatisticComponent implements OnInit {
     this.pmValue = this.statisticSvc.calcPM(this.items);       
   }
 
+  itemsRegroup(items: IssueModel[]) {
+    this.regrouped = this.statisticSvc.mapStatisticData(items);
+    console.log('regrouped', this.regrouped);
+  }
 }

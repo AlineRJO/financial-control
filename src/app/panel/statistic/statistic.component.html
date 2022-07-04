@@ -1,12 +1,12 @@
 <div class="py-2">
-
+Nota de ordens:
     <div class="po-row">
         <po-select
         class="col-5"
         name="select"
         p-label="Ordenar por"
         [p-options]="optionsToOrder"
-        (p-change)="listSort($event)"
+        (p-change)="statisticSvc.listSort($event, items)"
       >
       </po-select>
     </div>
@@ -55,8 +55,23 @@
         </div>
     </div>
 
-    <div class="po-row">
-
+    <div class="po-row pt-3">
+        <div class="col-8 box-table">
+            <po-table
+                [p-columns]="cryptoColumns"
+                [p-items]="regrouped">
+                <ng-template p-table-cell-template let-column="column" let-row="row">
+                    <div *ngIf="column.property === 'PM'">
+                        {{row.PM}}
+                    </div>
+                </ng-template>
+                <ng-template p-table-cell-template let-column="column" let-row="row">
+                    <div *ngIf="column.property === 'currencyValue'">
+                        {{row.currencyValue | async}}
+                    </div>
+                </ng-template>
+            </po-table>
+        </div>
     </div>
 </div>
 

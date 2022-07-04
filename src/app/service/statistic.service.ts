@@ -63,4 +63,66 @@ export class StatisticService {
       return item;
     });
   }
+
+  listSort(order: string, items: Array<any>) {
+    return items.sort((a,b) => {
+      if(a[order] > b[order] ) {return 1;}
+      if(a[order] < b[order] ) {return -1;}
+      return 0;
+    });
+  }
+
+  itemsRegroup(items: IssueModel[]): Array<any> {
+    let regrouped;
+    let parAux = '';
+    let obj;
+    
+    const itemsOrdered = this.listSort('orderPar', items);
+    
+    itemsOrdered.forEach((item) => {
+      const parName = this.substringOrder(item);
+      if (parAux == '') {
+        parAux = parName;
+        const data = {
+          [parName]: [item]
+        };
+        
+        obj = data;
+      } else if ( parAux !== parName ) {
+        parAux = parName;
+        const data = {
+          [parName]: [item]
+        };
+        
+        obj = Object.assign(regrouped, data);
+      } else {
+        regrouped[parName].push(item);
+      }
+      regrouped = obj;
+    });
+
+    return regrouped;
+  }
+
+  mapStatisticData(items: IssueModel[]) {
+    const reagupData = this.itemsRegroup(items);
+    const orderList = Object.getOwnPropertyNames(reagupData);
+    
+    const prepareData = [];
+
+    for(let i = 0; orderList.length > i; i++) {
+      prepareData.push({
+        par: orderList[i],
+        PM: +this.calcPM(reagupData[orderList[i]]).toFixed(2),
+        currencyValue: this.cryptoCurrencyService.getTokenPrice(reagupData[orderList[i]])
+      })
+    }
+    console.log(`prepareData`, prepareData);
+    
+    return prepareData;
+  }
+
+  getCurrencyCryptoValues(orderList: string[]) {
+    return
+  }
 }
